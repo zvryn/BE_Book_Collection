@@ -1,0 +1,103 @@
+CREATE TYPE account_status AS ENUM ('active', 'inactive');
+CREATE TABLE users (
+    user_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    profile_picture VARCHAR(255),
+    date_joined DATE NOT NULL,
+    last_login TIMESTAMPTZ NOT NULL,
+    phone_number VARCHAR(20),
+    updated_at TIMESTAMPTZ NOT NULL,
+    account_status account_status NOT NULL
+);
+
+INSERT INTO users (username, password, email, first_name, last_name, date_of_birth, profile_picture, date_joined, last_login, phone_number, updated_at, account_status)
+VALUES
+('jdoe', 'password123', 'jdoe@example.com', 'John', 'Doe', '1985-03-14', NULL, '2024-10-02 06:48:39', '2024-10-02 06:48:39', '555-1234', '2024-10-02 06:48:39', 'active'),
+('asmith', 'pass456', 'asmith@example.com', 'Alice', 'Smith', '1985-03-15', NULL, '2024-10-02 06:48:39', '2024-10-02 06:48:39', '555-5678', '2024-10-02 06:48:39', 'active'),
+('bwayne', 'batman007', 'bwayne@example.com', 'Bruce', 'Wayne', '1978-02-19', NULL, '2024-10-02 06:48:39', '2024-10-02 06:48:39', '555-8765', '2024-10-02 06:48:39', 'active'),
+('ckent', 'superman', 'ckent@example.com', 'Clark', 'Kent', '1980-06-18', NULL, '2024-10-02 06:48:39', '2024-10-02 06:48:39', '555-4321', '2024-10-02 06:48:39', 'inactive'),
+('pmason', 'secret007', 'pmason@example.com', 'Perry', 'Mason', '1969-07-09', NULL, '2024-10-02 06:48:39', '2024-10-02 06:48:39', NULL, '2024-10-02 06:48:39', 'active'),
+('mjordan', 'airjordan', 'mjordan@example.com', 'Michael', 'Jordan', '1963-02-17', NULL, '2024-10-02 06:48:39', '2024-10-02 06:48:39', '555-9876', '2024-10-02 06:48:39', 'inactive'),
+('lgranger', 'magicspell', 'lgranger@example.com', 'Luna', 'Granger', '2000-12-11', NULL, '2024-10-02 06:48:39', '2024-10-02 06:48:39', '555-6543', '2024-10-02 06:48:39', 'active'),
+('pparker', 'spidey123', 'pparker@example.com', 'Peter', 'Parker', '1995-08-15', NULL, '2024-10-02 06:48:39', '2024-10-02 06:48:39', '555-3210', '2024-10-02 06:48:39', 'active'),
+('tstark', 'ironman', 'tstark@example.com', 'Tony', 'Stark', '1975-05-29', NULL, '2024-10-02 06:48:39', '2024-10-02 06:48:39', '555-2222', '2024-10-02 06:48:39', 'inactive'),
+('dsnow', 'winteriscoming', 'dsnow@example.com', 'Jon', 'Snow', '1987-12-01', NULL, '2024-10-02 06:48:39', '2024-10-02 06:48:39', '555-7777', '2024-10-02 06:48:39', 'active');
+
+CREATE TABLE books (
+    book_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,    
+    title VARCHAR(255) NOT NULL,
+    author VARCHAR(100) NOT NULL,
+    genre VARCHAR(50) NOT NULL,
+    year INT NOT NULL,
+    description TEXT,
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO books (user_id, title, author, genre, year, description)
+VALUES
+(1, 'The Great Adventure', 'John Smith', 'adventure', 2021, 'An epic adventure of a lifetime.'),
+(2, 'Mystery of the Night', 'Alice Moore', 'mystery', 2022, 'A thrilling mystery novel set in the 1920s.'),
+(3, 'JavaScript for Beginners', 'David Clark', 'programming', 2023, 'A beginner-friendly guide to JavaScript.'),
+(4, 'The Last Kingdom', 'J.K. Rowling', 'fantasy', 1997, 'The rise of a forgotten kingdom.'),
+(5, 'Space Odyssey', 'Arthur C. Clarke', 'sci-fi', 1998, 'A journey through space and time.'),
+(6, 'The Art of War', 'Sun Tzu', 'strategy', 1845, 'Ancient strategies for modern warfare.'),
+(7, 'Fantasy World', 'George R.R. Martin', 'fantasy', 1962, 'A world of dragons and magic.'),
+(8, 'Python Programming', 'Mark Zuckerberg', 'programming', 1956, 'A comprehensive guide to Python programming.'),
+(9, 'The Dark Knight', 'Christopher Nolan', 'action', 2014, 'The story of a vigilante hero.'),
+(10, 'Inception Dreams', 'Leonardo DiCaprio', 'science fiction', 2002, 'A dream within a dream.'),
+(1, 'Into the Wild', 'Jon Krakauer', 'adventure', 1996, 'A thrilling account of a young man journey into the Alaskan wilderness.'),
+(2, 'The Hobbit', 'J.R.R. Tolkien', 'adventure', 1937, 'A fantasy novel about a hobbit s unexpected adventure.'),
+(3, 'Life of Pi', 'Yann Martel', 'adventure', 2001, 'A story of survival and self-discovery on a lifeboat.'),
+(4, 'The Call of the Wild', 'Jack London', 'adventure', 1903, 'A dog’s adventures in the wild after being stolen from his home.'),
+(5, 'Treasure Island', 'Robert Louis Stevenson', 'adventure', 1883, 'A classic tale of pirates and treasure.'),
+(6, 'Learn Python the Hard Way', 'Zed A. Shaw', 'programming', 2013, 'A comprehensive guide to learning Python.'),
+(7, 'Automate the Boring Stuff with Python', 'Al Sweigart', 'programming', 2015, 'A practical guide for automating tasks using Python.'),
+(8, 'Clean Code', 'Robert C. Martin', 'programming', 2008, 'A guide to writing clean, maintainable code.'),
+(9, 'The Girl with the Dragon Tattoo', 'Stieg Larsson', 'mystery', 2005, 'A suspenseful mystery involving a missing girl.'),
+(10, 'Gone Girl', 'Gillian Flynn', 'mystery', 2012, 'A psychological thriller about a tumultuous marriage.');
+
+CREATE TABLE collections (
+    collection_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,                       
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE NOT NULL,                                 
+    collection_name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,    
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP       
+);
+
+INSERT INTO collections (user_id, collection_name)
+VALUES
+(1, 'Adventure Collection'),
+(2, 'Mystery Novels'), 
+(3, 'Programming Guides');
+
+CREATE TABLE collection_books (
+    collection_books_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,                      
+    added_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,   
+    collection_id INT REFERENCES collections(collection_id) ON DELETE CASCADE, 
+    book_id INT REFERENCES books(book_id) ON DELETE CASCADE
+);
+
+INSERT INTO collection_books (collection_id, book_id)
+VALUES
+(1, 1 ),
+(1, 1 ),
+(1, 11 ),
+(1, 12),
+(1, 13),
+(1, 14),
+(1, 15),
+(2, 2),
+(2, 19),
+(2, 20),
+(3, 3),
+(3, 8),
+(3, 16),
+(3, 17),
+(3, 18);
