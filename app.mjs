@@ -1,5 +1,7 @@
 import express from "express";
 import connectionPool from "./utils/db.mjs";
+import { validateCreateBookData } from "./middlewares/books.validation.mjs";
+import { validateCreateCollectionData } from "./middlewares/collection.validation.mjs";
 
 const app = express();
 const port = 4000;
@@ -11,7 +13,7 @@ app.get("/test", (req, res) => {
 });
 
 //1.API for Adding a new book
-app.post("/books", async (req, res) => {
+app.post("/books", [validateCreateBookData], async (req, res) => {
   const { title, author, genre, year, description } = req.body;
   const newBook = {
     title,
@@ -115,7 +117,7 @@ app.get("/books/:bookId", async (req, res) => {
 });
 
 //4. API for Edit a book
-app.put("/books/:bookId", async (req, res) => {
+app.put("/books/:bookId", [validateCreateBookData], async (req, res) => {
   const bookIdFromClient = req.params.bookId;
   const updateBook = { ...req.body, updated_at: new Date() };
 
@@ -203,7 +205,7 @@ app.delete("/books/:bookId", async (req, res) => {
 });
 
 //6. API for Adding a new Collection
-app.post("/collections", async (req, res) => {
+app.post("/collections", [validateCreateCollectionData], async (req, res) => {
   const { user_id, collection_name } = req.body;
   const newCollection = {
     user_id,
@@ -406,48 +408,52 @@ app.get("/collections/:collectionId", async (req, res) => {
 });
 
 //11. API for Edit collection
-app.put("/collections/:collectionId", async (req, res) => {
-  const { collectionId } = req.params; // Get collectionId from the URL
-  const { name } = req.body; // Get the new name from the request body
+app.put(
+  "/collections/:collectionId",
+  [validateCreateCollectionData],
+  async (req, res) => {
+    const { collectionId } = req.params; // Get collectionId from the URL
+    const { collection_name } = req.body; // Get the new name from the request body
 
-  if (!name || typeof name !== "string") {
-    return res
-      .status(400)
-      .json({ message: "Invalid name. Please provide a valid string." });
-  }
-
-  try {
-    // Check if the collection exists
-    const collectionResult = await connectionPool.query(
-      "SELECT * FROM collections WHERE collection_id = $1",
-      [collectionId]
-    );
-
-    if (collectionResult.rows.length === 0) {
-      return res.status(404).json({ message: "Collection not found" });
+    if (!collection_name || typeof collection_name !== "string") {
+      return res
+        .status(400)
+        .json({ message: "Invalid name. Please provide a valid string." });
     }
 
-    // Update the collection's name
-    await connectionPool.query(
-      "UPDATE collections SET collection_name = $1 WHERE collection_id = $2",
-      [name, collectionId]
-    );
+    try {
+      // Check if the collection exists
+      const collectionResult = await connectionPool.query(
+        "SELECT * FROM collections WHERE collection_id = $1",
+        [collectionId]
+      );
 
-    return res.status(200).json({
-      message: "Collection updated successfully",
-      updatedCollection: {
-        id: collectionId,
-        name,
-      },
-    });
-  } catch (error) {
-    console.error("Error updating the collection:", error);
-    return res.status(500).json({
-      message: "Failed to update the collection. Please try again later.",
-      error: error.message,
-    });
+      if (collectionResult.rows.length === 0) {
+        return res.status(404).json({ message: "Collection not found" });
+      }
+
+      // Update the collection's name
+      await connectionPool.query(
+        "UPDATE collections SET collection_name = $1 WHERE collection_id = $2",
+        [collection_name, collectionId]
+      );
+
+      return res.status(200).json({
+        message: "Collection updated successfully",
+        updatedCollection: {
+          id: collectionId,
+          collection_name,
+        },
+      });
+    } catch (error) {
+      console.error("Error updating the collection:", error);
+      return res.status(500).json({
+        message: "Failed to update the collection. Please try again later.",
+        error: error.message,
+      });
+    }
   }
-});
+);
 
 //12. API for Delete collection
 app.delete("/collections/:collectionId", async (req, res) => {
