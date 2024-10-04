@@ -1,8 +1,11 @@
 import { Router } from "express";
 import { validateCreateBookData } from "../middlewares/books.validation.mjs";
 import connectionPool from "../utils/db.mjs";
+import { protect } from "../middlewares/protect.mjs";
 
 const bookRouter = Router();
+
+bookRouter.use(protect);
 
 //1.API for Adding a new book
 bookRouter.post("/", [validateCreateBookData], async (req, res) => {

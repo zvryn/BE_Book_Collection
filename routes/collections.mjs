@@ -2,8 +2,10 @@ import { Router } from "express";
 import { validateCreateCollectionData } from "../middlewares/collection.validation.mjs";
 import connectionPool from "../utils/db.mjs";
 import { validateCollectionBookData } from "../middlewares/collection-book.validation.mjs";
+import { protect } from "../middlewares/protect.mjs";
 
 const collectionRouter = Router();
+collectionRouter.use(protect);
 //6. API for Adding a new Collection
 collectionRouter.post("/", [validateCreateCollectionData], async (req, res) => {
   const { user_id, collection_name } = req.body;
