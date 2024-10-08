@@ -77,12 +77,18 @@ authRouter.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
+    console.log(user);
+
     // Create JWT token
     const token = jwt.sign(
-      { id: user.id, firstName: user.first_name, lastName: user.last_name },
+      {
+        id: user.user_id,
+        firstName: user.first_name,
+        lastName: user.last_name,
+      },
       process.env.SECRET_KEY,
       {
-        expiresIn: "15m", // Token expires in 15 minutes
+        expiresIn: "1h", // Token expires in 60 minutes
       }
     );
 

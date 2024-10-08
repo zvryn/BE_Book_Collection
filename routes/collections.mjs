@@ -6,12 +6,13 @@ import { protect } from "../middlewares/protect.mjs";
 
 const collectionRouter = Router();
 collectionRouter.use(protect);
+
 //6. API for Adding a new Collection
 collectionRouter.post("/", [validateCreateCollectionData], async (req, res) => {
-  const { user_id, collection_name } = req.body;
+  const { collection_name } = req.body;
   const newCollection = {
-    user_id,
     collection_name,
+    user_id: req.user.id,
     created_at: new Date(),
     updated_at: new Date(),
   };
@@ -23,7 +24,7 @@ collectionRouter.post("/", [validateCreateCollectionData], async (req, res) => {
       `INSERT INTO collections (user_id,collection_name)
          values ($1,$2)`,
       [
-        1, // user_id will be edited later when authentication completed
+        newCollection.user_id, // user_id will be edited later when authentication completed
         newCollection.collection_name,
       ]
     );

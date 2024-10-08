@@ -16,10 +16,11 @@ bookRouter.post("/", [validateCreateBookData], async (req, res) => {
     genre,
     year,
     description,
+    user_id: req.user.id,
     created_at: new Date(),
     updated_at: new Date(),
   };
-
+  console.log(req.user);
   console.log(newBook);
 
   try {
@@ -32,7 +33,7 @@ bookRouter.post("/", [validateCreateBookData], async (req, res) => {
         newBook.genre,
         newBook.year,
         newBook.description,
-        1, // user_id will be edited later when authentication completed
+        newBook.user_id, // user_id will be edited later when authentication completed
       ]
     );
 

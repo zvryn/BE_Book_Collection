@@ -1,38 +1,38 @@
 export const validateCreateBookData = (req, res, next) => {
   // 1) Books detail must contain tilte,author,genre,year,description
   if (!req.body.title) {
-    return res.status(401).json({
+    return res.status(400).json({
       message: "Please give book's title detail",
     });
   }
 
   if (!req.body.author) {
-    return res.status(401).json({
+    return res.status(400).json({
       message: "Please give book's author detail",
     });
   }
 
   if (!req.body.genre) {
-    return res.status(401).json({
+    return res.status(400).json({
       message: "Please give book's genre detail",
     });
   }
 
   if (!req.body.year) {
-    return res.status(401).json({
+    return res.status(400).json({
       message: "Please give book's year detail",
     });
   }
 
   if (!req.body.description) {
-    return res.status(401).json({
+    return res.status(400).json({
       message: "Please give book's description detail",
     });
   }
 
   // 2) Books Description must not exceed 500 character
   if (req.body.description.length > 500) {
-    return res.status(401).json({
+    return res.status(400).json({
       message: "Books' description must not exceed 500 character",
     });
   }
